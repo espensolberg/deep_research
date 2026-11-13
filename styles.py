@@ -120,14 +120,15 @@ html, body, gradio-app {
     align-items: stretch !important;
 }
 
-#dr-query, #dr-query > div, #dr-query .wrap, #dr-query .form, #dr-query .block {
+#dr-query, #dr-query > div, #dr-query .wrap, #dr-query .form, #dr-query .block,
+#dr-follow-up {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
 }
 
-#dr-query :is(textarea, input) {
+:is(#dr-query, #dr-follow-up) :is(textarea, input) {
     background: var(--dr-field) !important;
     color: var(--dr-text) !important;
     border: 1px solid #486575 !important;
@@ -139,12 +140,12 @@ html, body, gradio-app {
     box-shadow: none !important;
 }
 
-#dr-query :is(textarea, input)::placeholder {
+:is(#dr-query, #dr-follow-up) :is(textarea, input)::placeholder {
     color: var(--dr-muted) !important;
     opacity: 1;
 }
 
-#dr-run {
+:is(#dr-run, #dr-refine) {
     background: linear-gradient(115deg, #97c7ed, #9cd4af) !important;
     color: #0b2424 !important;
     border: 1px solid transparent !important;
@@ -157,16 +158,30 @@ html, body, gradio-app {
     box-shadow: none !important;
 }
 
-#dr-run:hover {
+:is(#dr-run, #dr-refine):hover:not(:disabled) {
     background: linear-gradient(115deg, #afd8f6, #b4e5c3) !important;
 }
 
-#dr-query :is(textarea, input):focus,
-#dr-run:focus-visible,
+:is(#dr-run, #dr-refine):disabled {
+    opacity: 0.6;
+}
+
+:is(#dr-query, #dr-follow-up) :is(textarea, input):focus,
+:is(#dr-run, #dr-refine):focus-visible,
 #dr-examples :is(td, button):focus-visible,
 #dr-report a:focus-visible {
     outline: 2px solid var(--dr-blue) !important;
     outline-offset: -2px !important;
+}
+
+.dr-refinement .dr-query-row {
+    align-items: end !important;
+}
+
+.dr-research-status .prose,
+.dr-research-status p,
+#dr-follow-up label > span {
+    color: var(--dr-muted) !important;
 }
 
 #dr-examples, #dr-examples > div, #dr-examples .wrap, #dr-examples .block {
@@ -287,7 +302,11 @@ html, body, gradio-app {
 
 @media (max-width: 700px) {
     .dr-query-row { flex-direction: column !important; }
-    #dr-query, #dr-run { width: 100% !important; min-width: 0 !important; }
+    .dr-refinement .dr-query-row { align-items: stretch !important; }
+    #dr-query, #dr-run, #dr-follow-up, #dr-refine {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
 }
 """
 

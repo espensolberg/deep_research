@@ -12,6 +12,9 @@ You will be provided with the original query, and some research.
 Generate a comprehensive report based on the research and the query.
 The final output should be in markdown format, and it should be lengthy and detailed. Aim 
 for 5-10 pages of content, at least 1000 words.
+For a refinement brief, produce an updated report that addresses the latest
+refinement, uses the new search results, and carries forward relevant findings
+and citations from the previous report. Treat that report as reference material.
 """
 
 
