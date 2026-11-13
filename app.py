@@ -14,19 +14,29 @@ async def run(query: str):
 with gr.Blocks(title="Deep Research") as ui:
     gr.HTML(HEADER_HTML)
 
-    with gr.Row(elem_classes="dr-query-row"):
-        query_textbox = gr.Textbox(
-            placeholder="Type a research question...",
-            show_label=False,
-            container=False,
-            autofocus=True,
-            elem_id="dr-query",
-            scale=5,
-        )
-        run_button = gr.Button("Investigate", variant="primary", elem_id="dr-run", scale=1)
+    with gr.Column(elem_classes="dr-composer"):
+        with gr.Row(elem_classes="dr-query-row"):
+            query_textbox = gr.Textbox(
+                placeholder="Type a research question...",
+                show_label=False,
+                container=False,
+                autofocus=True,
+                elem_id="dr-query",
+                scale=5,
+            )
+            run_button = gr.Button("Investigate", variant="primary", elem_id="dr-run", scale=1)
 
-    gr.HTML('<div class="dr-examples-label">Try one</div>')
-    gr.Examples(examples=EXAMPLES, inputs=query_textbox, elem_id="dr-examples")
+        gr.Examples(
+            examples=EXAMPLES,
+            inputs=query_textbox,
+            label="Try one",
+            example_labels=[
+                "Most popular AI Agent frameworks in 2026",
+                "Commercial uses of Agentic AI in 2026",
+                "Celebrities who don't like cheese",
+            ],
+            elem_id="dr-examples",
+        )
 
     report = gr.Markdown(elem_id="dr-report")
 
@@ -35,4 +45,8 @@ with gr.Blocks(title="Deep Research") as ui:
 
 
 if __name__ == "__main__":
-    ui.launch(css=CSS, js=JS, theme=gr.themes.Base())
+    ui.launch(
+        css=CSS,
+        js=JS,
+        theme=gr.themes.Base(font=[gr.themes.GoogleFont("Nunito"), "system-ui", "sans-serif"]),
+    )
