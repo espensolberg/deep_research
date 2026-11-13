@@ -44,9 +44,17 @@ async def run(query: str, investigation: Investigation, refine: bool = False):
             investigation.latest_report,
         )
 
+    status = refinement_progress if refine else progress
     investigation.running = True
     try:
-        yield {run_button: gr.update(interactive=False), refine_button: gr.update(interactive=False)}
+        yield {
+            run_button: gr.update(interactive=False),
+            refine_button: gr.update(
+                value="Refining…" if refine else "Refine search",
+                interactive=False,
+            ),
+            refinement_progress: "Starting refinement…" if refine else "",
+        }
         async for update in ResearchManager().run_iteration(query, context):
             if isinstance(update, ReportData):
                 if refine:
@@ -59,11 +67,11 @@ async def run(query: str, investigation: Investigation, refine: bool = False):
                 investigation.latest_report = update.markdown_report
                 yield {report: update.markdown_report, follow_up: ""}
             else:
-                yield {progress: update}
-        yield {progress: ""}
+                yield {status: update}
+        yield {status: "Refinement complete. The updated report is above." if refine else ""}
     except Exception:
         logger.exception("Research round failed")
-        yield {progress: "The research round could not finish. Try again."}
+        yield {status: "The research round could not finish. Try again."}
     finally:
         investigation.running = False
 
@@ -77,7 +85,7 @@ async def run(query: str, investigation: Investigation, refine: bool = False):
         refinement_panel: gr.update(visible=rounds > 0),
         round_count: message,
         follow_up: gr.update(interactive=remaining),
-        refine_button: gr.update(interactive=remaining),
+        refine_button: gr.update(value="Refine search", interactive=remaining),
     }
 
 
@@ -127,8 +135,15 @@ with gr.Blocks(title="Deep Research") as ui:
                 scale=5,
             )
             refine_button = gr.Button("Refine search", elem_id="dr-refine", scale=1)
+        refinement_progress = gr.Markdown(
+            elem_id="dr-refinement-progress",
+            elem_classes="dr-research-status",
+        )
 
-    outputs = [run_button, progress, report, refinement_panel, round_count, follow_up, refine_button]
+    outputs = [
+        run_button, progress, report, refinement_panel, round_count,
+        follow_up, refine_button, refinement_progress,
+    ]
     gr.on(
         [run_button.click, query_textbox.submit],
         fn=run,
@@ -143,7 +158,8 @@ with gr.Blocks(title="Deep Research") as ui:
         inputs=[follow_up, investigation],
         outputs=outputs,
         concurrency_limit=None,
-        show_progress_on=progress,
+        show_progress="minimal",
+        show_progress_on=refinement_progress,
     )
 
 
